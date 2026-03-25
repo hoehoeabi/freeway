@@ -1,11 +1,16 @@
 import { Accessibility, ArrowLeft, Clock, DollarSign, MapPin, Phone, Star, ThumbsUp } from 'lucide-react'
+import { useState } from 'react'
 import { Link, useParams } from 'react-router'
+import { useReview } from '../../hooks/useReview'
 import { facilities } from '../data/facilities'
 import { ImageWithFallback } from './figma/ImageWithFallback'
 
 export function FacilityDetail() {
     const { id } = useParams<{ id: string }>()
     const facility = facilities.find((f) => f.id === id)
+
+    const { reviews, createReview, toggleLike, addComment } = useReview()
+    const [content, setContent] = useState('')
 
     if (!facility) {
         return (
@@ -121,51 +126,83 @@ export function FacilityDetail() {
 
             {/* Reviews Section */}
             <div className="bg-white rounded-2xl p-8 shadow-lg">
-                <h2 className="text-2xl mb-6">리뷰 ({facility.reviews.length})</h2>
-                <div className="space-y-6">
-                    {facility.reviews.map((review) => (
-                        <div key={review.id} className="pb-6 border-b border-gray-100 last:border-0">
-                            <div className="flex items-start justify-between mb-3">
-                                <div>
-                                    <div className="flex items-center gap-3 mb-2">
-                                        <div className="size-10 bg-gradient-to-br from-blue-400 to-indigo-500 rounded-full flex items-center justify-center text-white">
-                                            {review.userName.charAt(0)}
-                                        </div>
-                                        <div>
-                                            <p>{review.userName}</p>
-                                            <p className="text-sm text-gray-500">{review.accessibilityType}</p>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className="text-right">
-                                    <div className="flex items-center gap-1 mb-1">
-                                        {Array.from({ length: 5 }).map((_, i) => (
-                                            <Star
-                                                key={i}
-                                                className={`size-4 ${
-                                                    i < review.rating
-                                                        ? 'fill-yellow-400 text-yellow-400'
-                                                        : 'text-gray-300'
-                                                }`}
-                                            />
-                                        ))}
-                                    </div>
-                                    <p className="text-sm text-gray-500">{review.date}</p>
-                                </div>
-                            </div>
-                            <p className="text-gray-700 leading-relaxed mb-3">{review.comment}</p>
-                            <button className="flex items-center gap-1 text-sm text-gray-500 hover:text-blue-600 transition-colors">
-                                <ThumbsUp className="size-4" />
-                                <span>도움됨 {review.helpfulCount}</span>
-                            </button>
-                        </div>
-                    ))}
+                <h2 className="text-2xl mb-6">리뷰 ({reviews.filter((r) => r.placeId === Number(id)).length})</h2>
+
+                {/* 리뷰 작성 */}
+                <div className="mb-6 space-y-3">
+                    <textarea
+                        className="w-full border p-2 rounded"
+                        placeholder="리뷰를 작성하세요"
+                        value={content}
+                        onChange={(e) => setContent(e.target.value)}
+                    />
+
+                    <button
+                        className="px-4 py-2 bg-blue-500 text-white rounded"
+                        onClick={() => {
+                            if (!content.trim()) {
+                                alert('내용을 입력하세요')
+                                return
+                            }
+
+                            createReview({
+                                content,
+                                userId: 'user1',
+                                placeId: Number(id),
+                                ratings: {
+                                    entrance: 5,
+                                    interior: 4,
+                                    facility: 3,
+                                },
+                            })
+
+                            setContent('')
+                        }}
+                    >
+                        리뷰 작성
+                    </button>
                 </div>
 
-                {/* Add Review Button */}
-                <button className="w-full mt-6 px-6 py-3 bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-lg hover:from-blue-600 hover:to-indigo-700 transition-all">
-                    리뷰 작성하기
-                </button>
+                {/* 리뷰 리스트 */}
+                <div className="space-y-6">
+                    {reviews
+                        .filter((r) => r.placeId === Number(id))
+                        .map((r) => (
+                            <div key={r.id} className="pb-6 border-b">
+                                {/* 내용 */}
+                                <p>{r.content}</p>
+
+                                {/* 별점 */}
+                                <p className="text-sm text-gray-500">
+                                    진입로:{r.ratings.entrance} / 내부:{r.ratings.interior} / 시설:
+                                    {r.ratings.facility}
+                                </p>
+
+                                {/* 좋아요 */}
+                                <button
+                                    onClick={() => toggleLike(r.id, 'user1')}
+                                    className={`flex items-center gap-1 transition ${
+                                        r.likedUsers.includes('user1')
+                                            ? 'text-blue-500'
+                                            : 'text-gray-400 hover:text-blue-400'
+                                    }`}
+                                >
+                                    <ThumbsUp className={r.likedUsers.includes('user1') ? 'fill-blue-500' : ''} />
+                                    {r.likes}
+                                </button>
+
+                                {/* 댓글 추가 */}
+                                <button onClick={() => addComment(r.id, '댓글입니다', 'user1')}>댓글 추가</button>
+
+                                {/* 댓글 목록 */}
+                                {r.comments.map((c) => (
+                                    <p key={c.id} className="ml-4 text-sm">
+                                        💬 {c.content}
+                                    </p>
+                                ))}
+                            </div>
+                        ))}
+                </div>
             </div>
         </div>
     )
