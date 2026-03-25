@@ -54,8 +54,8 @@ export function Community() {
     return (
         <div className="space-y-8">
             {/* Hero Section */}
-            <div className="bg-gradient-to-r from-purple-500 via-pink-500 to-red-500 rounded-2xl p-8 text-white">
-                <div className="flex items-center gap-3 mb-3">
+            <div className="rounded-2xl bg-gradient-to-r from-purple-500 via-pink-500 to-red-500 p-8 text-white">
+                <div className="mb-3 flex items-center gap-3">
                     <MessageSquare className="size-10" />
                     <h2 className="text-4xl">자유게시판</h2>
                 </div>
@@ -66,7 +66,7 @@ export function Community() {
             <div className="flex justify-end">
                 <button
                     onClick={() => setShowNewPostForm(!showNewPostForm)}
-                    className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-lg hover:from-purple-600 hover:to-pink-600 transition-all shadow-md"
+                    className="flex items-center gap-2 rounded-lg bg-gradient-to-r from-purple-500 to-pink-500 px-6 py-3 text-white shadow-md transition-all hover:from-purple-600 hover:to-pink-600"
                 >
                     <MessageSquare className="size-5" />
                     <span>글쓰기</span>
@@ -75,43 +75,43 @@ export function Community() {
 
             {/* New Post Form */}
             {showNewPostForm && (
-                <div className="bg-white rounded-xl p-6 shadow-md border-2 border-purple-200">
-                    <h3 className="text-xl mb-4 flex items-center gap-2">
+                <div className="rounded-xl border-2 border-purple-200 bg-white p-6 shadow-md">
+                    <h3 className="mb-4 flex items-center gap-2 text-xl">
                         <MessageSquare className="size-6 text-purple-500" />새 게시글 작성
                     </h3>
                     <form onSubmit={handleSubmitPost} className="space-y-4">
                         <div>
-                            <label className="block text-sm mb-2 text-gray-700">제목</label>
+                            <label className="mb-2 block text-sm text-gray-700">제목</label>
                             <input
                                 type="text"
                                 value={newPost.title}
                                 onChange={(e) => setNewPost({ ...newPost, title: e.target.value })}
-                                className="w-full px-4 py-2 border-2 border-gray-200 rounded-lg focus:border-purple-500 focus:outline-none"
+                                className="w-full rounded-lg border-2 border-gray-200 px-4 py-2 focus:border-purple-500 focus:outline-none"
                                 placeholder="제목을 입력하세요"
                                 required
                             />
                         </div>
                         <div>
-                            <label className="block text-sm mb-2 text-gray-700">내용</label>
+                            <label className="mb-2 block text-sm text-gray-700">내용</label>
                             <textarea
                                 value={newPost.content}
                                 onChange={(e) => setNewPost({ ...newPost, content: e.target.value })}
-                                className="w-full px-4 py-2 border-2 border-gray-200 rounded-lg focus:border-purple-500 focus:outline-none min-h-32"
+                                className="min-h-32 w-full rounded-lg border-2 border-gray-200 px-4 py-2 focus:border-purple-500 focus:outline-none"
                                 placeholder="내용을 입력하세요"
                                 required
                             />
                         </div>
-                        <div className="flex gap-2 justify-end">
+                        <div className="flex justify-end gap-2">
                             <button
                                 type="button"
                                 onClick={() => setShowNewPostForm(false)}
-                                className="px-4 py-2 border-2 border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+                                className="rounded-lg border-2 border-gray-300 px-4 py-2 text-gray-700 transition-colors hover:bg-gray-50"
                             >
                                 취소
                             </button>
                             <button
                                 type="submit"
-                                className="px-4 py-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-lg hover:from-purple-600 hover:to-pink-600 transition-all"
+                                className="rounded-lg bg-gradient-to-r from-purple-500 to-pink-500 px-4 py-2 text-white transition-all hover:from-purple-600 hover:to-pink-600"
                             >
                                 작성하기
                             </button>
@@ -125,12 +125,12 @@ export function Community() {
                 {posts.map((post) => (
                     <div
                         key={post.id}
-                        className="bg-white rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow border border-gray-100"
+                        className="rounded-xl border border-gray-100 bg-white p-6 shadow-sm transition-shadow hover:shadow-md"
                     >
-                        <h3 className="text-xl mb-2 hover:text-purple-600 transition-colors cursor-pointer">
+                        <h3 className="mb-2 cursor-pointer text-xl transition-colors hover:text-purple-600">
                             {post.title}
                         </h3>
-                        <p className="text-gray-600 mb-4 line-clamp-2">{post.content}</p>
+                        <p className="mb-4 line-clamp-2 text-gray-600">{post.content}</p>
 
                         <div className="flex items-center justify-between text-sm text-gray-500">
                             <div className="flex items-center gap-4">
@@ -161,8 +161,8 @@ export function Community() {
 
             {/* Info Box */}
             {!user && (
-                <div className="bg-purple-50 border-2 border-purple-200 rounded-xl p-6 text-center">
-                    <MessageSquare className="size-12 text-purple-400 mx-auto mb-3" />
+                <div className="rounded-xl border-2 border-purple-200 bg-purple-50 p-6 text-center">
+                    <MessageSquare className="mx-auto mb-3 size-12 text-purple-400" />
                     <p className="text-gray-700">로그인하시면 게시글 작성, 댓글, 좋아요 기능을 사용하실 수 있습니다.</p>
                 </div>
             )}
