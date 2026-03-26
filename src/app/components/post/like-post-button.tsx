@@ -13,7 +13,7 @@ export default function LikePostButton({
     isLiked: boolean
 }) {
     const { user } = useAuth()
-    const { mutate: togglePostLike } = useTogglePostLike({
+    const { mutate: togglePostLike } = useTogglePostLike(id, {
         onError: (_error) => {
             toast.error('좋아요 요청에 실패했습니다.', { position: 'top-center' })
         },
