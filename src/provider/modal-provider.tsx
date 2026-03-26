@@ -5,7 +5,7 @@ import { createPortal } from 'react-dom'
 export default function ModalProvider({ children }: { children: ReactNode }) {
     return (
         <>
-            {createPortal(<PostEditorModal />, document.getElementById('modal-root'))}
+            {createPortal(<PostEditorModal />, document.getElementById('modal-root')!)}
             {children}
         </>
     )
