@@ -37,9 +37,10 @@ export function usePlaces(filters: Filters, page: number = 1) {
   const [loading, setLoading] = useState(true)
   const [totalCount, setTotalCount] = useState(0)
 
+  const filtersKey = JSON.stringify(filters)
   useEffect(() => {
-    fetchPlaces()
-  }, [filters, page])
+  fetchPlaces()
+}, [filtersKey, page])
 
   async function fetchPlaces() {
     setLoading(true)
