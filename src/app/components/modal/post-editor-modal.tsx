@@ -63,6 +63,7 @@ export default function PostEditorModal() {
                     className="max-h-125 min-h-25 focus:outline-none"
                     placeholder="새로운 소식이 있나요?"
                 />
+                <input type="file" accept="image/*" multiple className="hidden" />
                 <Button disabled={isCreatePostPending} variant={'outline'} className="cursor-pointer">
                     <ImageIcon />
                     이미지 추가
