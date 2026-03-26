@@ -13,6 +13,7 @@ dist-ssr
 *.local
 .env.default
 .env
+.env.local
 
 # env files
 .env
