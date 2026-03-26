@@ -1,14 +1,14 @@
 import { 
   Accessibility,
-  ParkingCircle, 
+  CircleParking, 
   DoorOpen, 
-  ArrowUpDown
+  ArrowDownUp
 } from 'lucide-react'
 
 export const BARRIER_ICONS = {
   wheelchair:  { icon: Accessibility, label: '휠체어' },
-  elevator:    { icon: ArrowUpDown,   label: '엘리베이터' },
-  parking:     { icon: ParkingCircle, label: '장애인주차' },
+  elevator:    { icon: ArrowDownUp,   label: '엘리베이터' },
+  parking:     { icon: CircleParking, label: '장애인주차' },
   restroom:    { icon: DoorOpen,      label: '장애인화장실' },
 }
 
