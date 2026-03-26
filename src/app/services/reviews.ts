@@ -209,31 +209,24 @@ class ReviewsService {
   }
 
   /**
-   * 리뷰용 이미지를 Supabase Storage에 업로드하고 공용 URL을 반환합니다.
+   * 리뷰용 이미지를 Base64 문자열로 변환합니다. (스토리지 버킷 대신 DB 직접 저장 방식)
    */
   async uploadReviewImage(file: File): Promise<{ url?: string; error?: string }> {
-    const fileExt = file.name.split('.').pop()?.toLowerCase() || 'png'
-    // 중복 방지를 위해 타임스탬프와 랜덤 문자열을 조합한 파일명을 사용합니다.
-    const fileName = `${Date.now()}_${Math.random().toString(36).substring(2, 10)}.${fileExt}`
-    
-    // [Antigravity]: 400 에러 해결을 위해 버킷 이름을 'review_images'로 수정하고 
-    // contentType 옵션을 추가했습니다.
-    const BUCKET_NAME = 'review_images'
-
-    const { error: uploadError } = await supabase.storage
-      .from(BUCKET_NAME)
-      .upload(fileName, file, {
-        contentType: file.type,
-        upsert: true
+    try {
+      return new Promise((resolve) => {
+        const reader = new FileReader()
+        reader.onloadend = () => {
+          const base64String = reader.result as string
+          resolve({ url: base64String })
+        }
+        reader.onerror = () => {
+          resolve({ error: '이미지 변환 중 오류가 발생했습니다.' })
+        }
+        reader.readAsDataURL(file)
       })
-
-    if (uploadError) return { error: uploadError.message }
-
-    const { data } = supabase.storage
-      .from(BUCKET_NAME)
-      .getPublicUrl(fileName)
-
-    return { url: data.publicUrl }
+    } catch (err) {
+      return { error: '이미지 처리에 실패했습니다.' }
+    }
   }
 
   /**
