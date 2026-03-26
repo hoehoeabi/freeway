@@ -3,12 +3,13 @@ import { formatTimeAgo } from '@/app/lib/time'
 import defaultAvatar from '@/assets/default-avatar.png'
 import { Carousel, CarouselContent, CarouselItem } from '@/components/ui/carousel'
 import type { Post } from '@/types'
-import { HeartIcon, MessageCircle } from 'lucide-react'
+import { MessageCircle } from 'lucide-react'
 import DeletePostButton from './delete-post-button'
 import EditPostButton from './edit-post-button'
+import LikePostButton from './like-post-button'
 export default function PostItem(post: Post) {
     const { user } = useAuth()
-
+    const isLiked = post.post_likes.some((like) => like.user_id === user?.id)
     return (
         <div className="flex flex-col gap-4 border-b pb-8">
             {/* 1. 유저 정보, 수정/삭제 버튼 */}
@@ -61,11 +62,7 @@ export default function PostItem(post: Post) {
             {/* 3. 좋아요, 댓글 버튼 */}
             <div className="flex gap-2">
                 {/* 3-1. 좋아요 버튼 */}
-                <div className="hover:bg-muted flex cursor-pointer items-center gap-2 rounded-xl border-1 p-2 px-4 text-sm">
-                    <HeartIcon className="h-4 w-4" />
-                    <span>{post.post_likes.length}</span>
-                </div>
-
+                <LikePostButton id={post.id} likeCount={post.post_likes.length} isLiked={isLiked} />{' '}
                 {/* 3-2. 댓글 버튼 */}
                 <div className="hover:bg-muted flex cursor-pointer items-center gap-2 rounded-xl border-1 p-2 px-4 text-sm">
                     <MessageCircle className="h-4 w-4" />

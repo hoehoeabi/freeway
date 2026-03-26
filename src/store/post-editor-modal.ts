@@ -31,6 +31,7 @@ const usePostEditorModalStore = create(
                 openCreate: () => {
                     set({ isOpen: true, type: 'CREATE' })
                 },
+
                 openEdit: (param: Omit<EditMode, 'isOpen' | 'type'>) => {
                     set({ isOpen: true, type: 'EDIT', ...param })
                 },

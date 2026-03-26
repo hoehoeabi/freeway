@@ -6,11 +6,11 @@ export async function fetchPosts() {
         .from('post')
         .select(
             `
-        *,
-        post_images (image_url),
-        post_likes (id),
-        post_comments (id)
-    `,
+            *,
+            post_images (image_url),
+            post_likes (id, user_id),
+            post_comments (id)
+        `,
         )
         .order('created_at', { ascending: false })
     if (error) throw error
@@ -57,4 +57,13 @@ export async function deletePost(id: string) {
     const { error } = await supabase.from('post').delete().eq('id', id)
 
     if (error) throw error
+}
+
+export async function togglePostLike({ postId, userId }: { postId: string; userId: string }) {
+    const { data, error } = await supabase.rpc('toggle_post_like', {
+        p_post_id: postId,
+        p_user_id: userId,
+    })
+    if (error) throw error
+    return data
 }

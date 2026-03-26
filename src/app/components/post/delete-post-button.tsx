@@ -4,12 +4,10 @@ import { useOpenAlertModal } from '@/store/alert-modal'
 import { toast } from 'sonner'
 
 export default function DeletePostButton({ id }: { id: string }) {
-    // ✅ number → string
     const openAlertModal = useOpenAlertModal()
 
     const { mutate: deletePost, isPending: isDeletePostPending } = useDeletePost({
         onError: (_error) => {
-            // ✅ _ 추가
             toast.error('포스트 삭제에 실패했습니다', { position: 'top-center' })
         },
     })
