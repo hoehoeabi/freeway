@@ -1,4 +1,4 @@
-import { supabase } from '../../lib/supabase'
+import { supabase } from '../lib/supabase'
 
 // 리뷰 데이터 인터페이스
 export interface Review {
