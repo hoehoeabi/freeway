@@ -1,6 +1,7 @@
 import { Accessibility, ArrowLeft, MapPin, Phone } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router'
+import { AssistType, ContentType } from '../../../constants/api-codes'
 import { supabase } from '../lib/supabase'
 import { ImageWithFallback } from './figma/ImageWithFallback'
 
@@ -9,16 +10,41 @@ interface Facility {
     content_type: string
     title: string
     address: string
-    addr2?: string
-    tel?: string
-    lat?: number
-    lng?: number
-    image_url?: string
-    image_url2?: string
+    addr2?: string | null
+    tel?: string | null
+    lat?: number | null
+    lng?: number | null
+    image_url?: string | null
+    image_url2?: string | null
 
-    parking?: string
-    wheelchair?: string
-    restroom?: string
+    parking?: string | null
+    publictransport?: string | null
+    route?: string | null
+    ticketoffice?: string | null
+    promotion?: string | null
+    wheelchair?: string | null
+    exit?: string | null
+    elevator?: string | null
+    restroom?: string | null
+    auditorium?: string | null
+    room?: string | null
+    handicapetc?: string | null
+    braileblock?: string | null
+    helpdog?: string | null
+    guidehuman?: string | null
+    audioguide?: string | null
+    bigprint?: string | null
+    brailepromotion?: string | null
+    guidesystem?: string | null
+    blindhandicapetc?: string | null
+    signguide?: string | null
+    videoguide?: string | null
+    hearingroom?: string | null
+    hearinghandicapetc?: string | null
+    stroller?: string | null
+    lactationroom?: string | null
+    babysparechair?: string | null
+    infantsfamilyetc?: string | null
 }
 
 export function FacilityDetail() {
@@ -26,7 +52,9 @@ export function FacilityDetail() {
     const [facility, setFacility] = useState<Facility | null>(null)
 
     useEffect(() => {
-        if (id) fetchFacility()
+        if (id) {
+            fetchFacility()
+        }
     }, [id])
 
     const fetchFacility = async () => {
@@ -34,14 +62,30 @@ export function FacilityDetail() {
 
         if (error) {
             console.error(error)
-        } else {
-            setFacility(data)
+            return
         }
+
+        setFacility(data)
     }
 
     if (!facility) {
-        return <div className="text-center py-12">로딩중...</div>
+        return <div className="py-12 text-center">로딩중...</div>
     }
+
+    // content_type 숫자코드 -> 한글
+    const contentTypeLabelMap: Record<string, string> = {
+        [ContentType.TOURISM]: '관광지',
+        [ContentType.LODGING]: '숙박',
+        [ContentType.RESTAURANT]: '음식점',
+    }
+
+    const contentTypeLabel = contentTypeLabelMap[facility.content_type] ?? facility.content_type
+
+    // AssistType 기준으로 값 있는 편의시설만 추출
+    const activeAssistTypes = Object.entries(AssistType).filter(([key]) => {
+        const value = facility[key as keyof Facility]
+        return value !== null && value !== undefined && value !== ''
+    })
 
     return (
         <div className="space-y-6">
@@ -51,30 +95,33 @@ export function FacilityDetail() {
                 <span>목록으로</span>
             </Link>
 
-            <div className="bg-white rounded-2xl overflow-hidden shadow-lg">
+            <div className="overflow-hidden rounded-2xl bg-white shadow-lg">
                 {/* 이미지 */}
                 <div className="relative h-96">
                     <ImageWithFallback
                         src={facility.image_url || '/fallback.png'}
                         alt={facility.title}
-                        className="w-full h-full object-cover"
+                        className="h-full w-full object-cover"
                     />
 
                     <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
 
-                    <div className="absolute bottom-0 left-0 right-0 p-8 text-white">
-                        <h1 className="text-4xl mb-2">{facility.title}</h1>
-                        <p className="opacity-90">{facility.content_type}</p>
+                    <div className="absolute right-0 bottom-0 left-0 p-8 text-white">
+                        <h1 className="mb-2 text-4xl">{facility.title}</h1>
+                        <p className="opacity-90">{contentTypeLabel}</p>
                     </div>
                 </div>
 
                 {/* 내용 */}
-                <div className="p-8 space-y-6">
+                <div className="space-y-6 p-8">
                     {/* 기본 정보 */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                         <div className="flex items-center gap-3">
                             <MapPin className="size-5 text-blue-600" />
-                            <p>{facility.address}</p>
+                            <p>
+                                {facility.address}
+                                {facility.addr2 ? ` ${facility.addr2}` : ''}
+                            </p>
                         </div>
 
                         {facility.tel && (
@@ -87,22 +134,20 @@ export function FacilityDetail() {
 
                     {/* 접근성 */}
                     <div>
-                        <h2 className="text-2xl mb-3 flex items-center gap-2">
+                        <h2 className="mb-3 flex items-center gap-2 text-2xl">
                             <Accessibility className="size-6 text-blue-500" />
                             편의시설
                         </h2>
 
-                        <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-                            {facility.wheelchair && <div className="p-3 bg-blue-50 rounded-lg">휠체어 접근 가능</div>}
-
-                            {facility.parking && <div className="p-3 bg-blue-50 rounded-lg">장애인 주차 가능</div>}
-
-                            {facility.restroom && <div className="p-3 bg-blue-50 rounded-lg">장애인 화장실</div>}
+                        <div className="grid grid-cols-2 gap-3 md:grid-cols-3">
+                            {activeAssistTypes.map(([key, label]) => (
+                                <div key={key} className="rounded-lg bg-blue-50 p-3">
+                                    {label}
+                                </div>
+                            ))}
                         </div>
 
-                        {!facility.wheelchair && !facility.parking && !facility.restroom && (
-                            <p className="text-gray-400">등록된 편의시설 정보 없음</p>
-                        )}
+                        {activeAssistTypes.length === 0 && <p className="text-gray-400">등록된 편의시설 정보 없음</p>}
                     </div>
                 </div>
             </div>
