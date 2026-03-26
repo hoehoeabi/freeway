@@ -86,20 +86,20 @@ export function FacilityDetail() {
 
     useEffect(() => {
         if (id) {
-            fetchFacility()
+            fetchFacility(id)
         }
     }, [id])
 
     //장소 정보를 가져옵니다.
-    const fetchFacility = async () => {
-        const { data, error } = await supabase.from('places').select('*').eq('content_id', id).single()
+    const fetchFacility = async (placeId: string) => {
+        const { data, error } = await supabase.from('places').select('*').eq('content_id', placeId).single()
 
         if (error) {
             console.error(error)
             return
         }
 
-        setFacility(data)
+        setFacility(data as Facility)
     }
 
     //이미지 선택 시 미리보기를 생성하고 상태에 저장합니다.
