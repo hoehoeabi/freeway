@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button'
 import { Carousel, CarouselContent, CarouselItem } from '@/components/ui/carousel'
 import type { Post } from '@/types'
 import { HeartIcon, MessageCircle } from 'lucide-react'
+import EditPostItemButton from './edit-post-item-button'
 export default function PostItem(post: Post) {
     const { user } = useAuth()
 
@@ -21,16 +22,16 @@ export default function PostItem(post: Post) {
                     />
                     <div>
                         <div className="font-bold hover:underline">{user?.nickname ?? '알 수 없음'}</div>
-                        <div className="text-muted-foreground text-sm">{formatTimeAgo(post.created_at!)}</div>
+                        <div className="text-muted-foreground text-sm">
+                            {post.created_at ? formatTimeAgo(post.created_at) : ''}
+                        </div>
                     </div>
                 </div>
 
                 {/* 1-2. 수정/삭제 버튼 */}
                 {post.user_id === user?.id && (
                     <div className="text-muted-foreground flex text-sm">
-                        <Button className="cursor-pointer" variant={'ghost'}>
-                            수정
-                        </Button>
+                        <EditPostItemButton post={post} />
                         <Button className="cursor-pointer" variant={'ghost'}>
                             삭제
                         </Button>

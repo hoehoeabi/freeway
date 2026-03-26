@@ -36,3 +36,19 @@ export async function createPost(postData: { title: string; content: string; use
 
     return data
 }
+
+export async function updatePost(postData: { id: string; content: string }) {
+    const { data, error } = await supabase
+        .from('post')
+        .update({
+            content: postData.content,
+            title: postData.content.slice(0, 20),
+            updated_at: new Date().toISOString(),
+        })
+        .eq('id', postData.id)
+        .select()
+        .single()
+
+    if (error) throw error
+    return data
+}
