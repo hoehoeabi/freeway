@@ -237,7 +237,7 @@ export function Home() {
 
                 {/* 배리어프리 아이콘 (DB 기반) */}
                 <div className="flex flex-wrap gap-1.5">
-                  {getActiveIcons(place).slice(0, 3).map(([key, { icon: Icon, label }]) => (
+                  {getActiveIcons(place).slice(0, 4).map(([key, { icon: Icon, label }]) => (
                     <span
                       key={key}
                       className="px-2 py-1 bg-blue-50 text-blue-600 text-xs rounded-full flex items-center gap-1"
