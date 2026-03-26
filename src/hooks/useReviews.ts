@@ -107,5 +107,39 @@ export function useReviews(placeId: string, userId?: string, sortBy: 'latest' | 
     return result
   }
 
-  return { reviews, loading, averages, fetchReviews, addReview, toggleLikeReview, uploadImage, addReply }
+  /**
+   * 리뷰를 삭제합니다.
+   */
+  const deleteReview = async (reviewId: string, currentUserId: string) => {
+    const result = await reviewsService.deleteReview(reviewId, currentUserId)
+    if (result.success) {
+      await fetchReviews(false)
+      await fetchAverages()
+    }
+    return result
+  }
+
+  /**
+   * 답글을 삭제합니다.
+   */
+  const deleteReply = async (replyId: string, currentUserId: string) => {
+    const result = await reviewsService.deleteReply(replyId, currentUserId)
+    if (result.success) {
+      await fetchReviews(false)
+    }
+    return result
+  }
+
+  return { 
+    reviews, 
+    loading, 
+    averages, 
+    fetchReviews, 
+    addReview, 
+    toggleLikeReview, 
+    uploadImage, 
+    addReply,
+    deleteReview,
+    deleteReply
+  }
 }

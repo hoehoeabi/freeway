@@ -242,6 +242,34 @@ class ReviewsService {
     if (error) return { success: false, error: error.message }
     return { success: true }
   }
+
+  /**
+   * 리뷰를 삭제합니다. (본인인 경우에만 성공)
+   */
+  async deleteReview(reviewId: string, userId: string): Promise<{ success: boolean; error?: string }> {
+    const { error } = await supabase
+      .from('reviews')
+      .delete()
+      .eq('id', reviewId)
+      .eq('user_id', userId)
+
+    if (error) return { success: false, error: error.message }
+    return { success: true }
+  }
+
+  /**
+   * 답글(댓글)을 삭제합니다. (본인인 경우에만 성공)
+   */
+  async deleteReply(replyId: string, userId: string): Promise<{ success: boolean; error?: string }> {
+    const { error } = await supabase
+      .from('review_comments')
+      .delete()
+      .eq('id', replyId)
+      .eq('user_id', userId)
+
+    if (error) return { success: false, error: error.message }
+    return { success: true }
+  }
 }
 
 export const reviewsService = new ReviewsService()

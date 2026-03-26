@@ -27,7 +27,7 @@ export function FacilityDetail() {
     const { id } = useParams<{ id: string }>()
     const { user } = useAuth()
     const [sortBy, setSortBy] = useState<'latest' | 'likes'>('latest')
-    const { reviews, loading, averages, addReview, uploadImage, toggleLikeReview, addReply } = useReviews(
+    const { reviews, loading, averages, addReview, uploadImage, toggleLikeReview, addReply, deleteReview, deleteReply } = useReviews(
         id || '',
         user?.id,
         sortBy,
@@ -137,6 +137,22 @@ export function FacilityDetail() {
         if (result.success) {
             setReplyInputs((prev) => ({ ...prev, [reviewId]: '' }))
         }
+    }
+
+    /**
+     * [리뷰 삭제 핸들러]
+     */
+    const handleDeleteReview = async (reviewId: string) => {
+        if (!user || !window.confirm('리뷰를 삭제하시겠습니까?')) return
+        await deleteReview(reviewId, user.id)
+    }
+
+    /**
+     * [답글 삭제 핸들러]
+     */
+    const handleDeleteReply = async (replyId: string) => {
+        if (!user || !window.confirm('답글을 삭제하시겠습니까?')) return
+        await deleteReply(replyId, user.id)
     }
 
     // 별점 선택 컴포넌트
@@ -283,6 +299,13 @@ export function FacilityDetail() {
                             <textarea
                                 value={newReview}
                                 onChange={(e) => setNewReview(e.target.value)}
+                                onKeyDown={(e) => {
+                                    // 엔터 키를 누르고, Shift 키가 눌리지 않았으며, IME 조합 중이 아닐 때 제출합니다.
+                                    if (e.key === 'Enter' && !e.shiftKey && !e.nativeEvent.isComposing) {
+                                        e.preventDefault() // 줄바꿈 방지
+                                        handleSubmitReview(e)
+                                    }
+                                }}
                                 placeholder="이 장소에 대한 경험을 공유해주세요."
                                 className="min-h-[100px] w-full resize-none rounded-lg border border-gray-200 p-4 transition-all outline-none focus:ring-2 focus:ring-blue-500"
                             />
@@ -401,7 +424,18 @@ export function FacilityDetail() {
                         reviews.map((review) => (
                             <div key={review.id} className="space-y-3 border-b border-gray-100 pb-6 last:border-0">
                                 <div className="flex items-center justify-between">
-                                    <span className="font-bold text-gray-800">사용자 {review.user_id.slice(0, 4)}</span>
+                                    <div className="flex items-center gap-2">
+                                        <span className="font-bold text-gray-800">사용자 {review.user_id.slice(0, 4)}</span>
+                                        {user?.id === review.user_id && (
+                                            <button
+                                                onClick={() => handleDeleteReview(review.id)}
+                                                className="text-gray-300 hover:text-red-500 transition-colors"
+                                                title="리뷰 삭제"
+                                            >
+                                                <Trash2 className="size-3.5" />
+                                            </button>
+                                        )}
+                                    </div>
                                     <span className="text-sm text-gray-400">
                                         {new Date(review.created_at).toLocaleDateString()}
                                     </span>
@@ -490,6 +524,15 @@ export function FacilityDetail() {
                                                         <span className="text-[10px] text-gray-400">
                                                             {new Date(reply.created_at).toLocaleDateString()}
                                                         </span>
+                                                        {user?.id === reply.user_id && (
+                                                            <button
+                                                                onClick={() => handleDeleteReply(reply.id)}
+                                                                className="text-gray-300 hover:text-red-500 transition-colors"
+                                                                title="답글 삭제"
+                                                            >
+                                                                <Trash2 className="size-3" />
+                                                            </button>
+                                                        )}
                                                     </div>
                                                     <p className="text-gray-600">{reply.content}</p>
                                                 </div>
@@ -506,6 +549,12 @@ export function FacilityDetail() {
                                                 onChange={(e) =>
                                                     setReplyInputs((prev) => ({ ...prev, [review.id]: e.target.value }))
                                                 }
+                                                onKeyDown={(e) => {
+                                                    // 엔터 키를 누르고, 한글 입력기(IME) 조합 중이 아닐 때 제출합니다.
+                                                    if (e.key === 'Enter' && !e.nativeEvent.isComposing) {
+                                                        handleSubmitReply(review.id)
+                                                    }
+                                                }}
                                                 placeholder="답글을 남겨주세요..."
                                                 className="flex-1 rounded-lg border border-gray-100 bg-gray-50 px-3 py-1.5 text-sm outline-none focus:border-blue-400 focus:bg-white"
                                             />
