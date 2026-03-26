@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { supabase } from '../lib/supabase'
+import { supabase } from '../app/lib/supabase'
 
 // 필터 타입 정의
 interface Filters {

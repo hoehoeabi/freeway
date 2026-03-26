@@ -2,7 +2,7 @@ import { Accessibility, ArrowLeft, Camera, Heart, MapPin, Phone, Send, Trash2 } 
 import { useEffect, useRef, useState } from 'react'
 import { Link, useParams } from 'react-router'
 import { useReviews } from '../../hooks/useReviews'
-import { supabase } from '../../lib/supabase'
+import { supabase } from '../lib/supabase'
 import { useAuth } from '../contexts/AuthContext'
 import { ImageWithFallback } from './figma/ImageWithFallback'
 
@@ -425,11 +425,13 @@ export function FacilityDetail() {
                             <div key={review.id} className="space-y-3 border-b border-gray-100 pb-6 last:border-0">
                                 <div className="flex items-center justify-between">
                                     <div className="flex items-center gap-2">
-                                        <span className="font-bold text-gray-800">사용자 {review.user_id.slice(0, 4)}</span>
+                                        <span className="font-bold text-gray-800">
+                                            사용자 {review.user_id.slice(0, 4)}
+                                        </span>
                                         {user?.id === review.user_id && (
                                             <button
                                                 onClick={() => handleDeleteReview(review.id)}
-                                                className="text-gray-300 hover:text-red-500 transition-colors"
+                                                className="text-gray-300 transition-colors hover:text-red-500"
                                                 title="리뷰 삭제"
                                             >
                                                 <Trash2 className="size-3.5" />
@@ -530,13 +532,15 @@ export function FacilityDetail() {
                                                             className={`flex items-center gap-0.5 transition-colors ${reply.is_liked ? 'text-red-500' : 'text-gray-300 hover:text-red-400'}`}
                                                             title="좋아요"
                                                         >
-                                                            <Heart className={`size-3 ${reply.is_liked ? 'fill-current' : ''}`} />
+                                                            <Heart
+                                                                className={`size-3 ${reply.is_liked ? 'fill-current' : ''}`}
+                                                            />
                                                             <span className="text-[10px]">{reply.likes || 0}</span>
                                                         </button>
                                                         {user?.id === reply.user_id && (
                                                             <button
                                                                 onClick={() => handleDeleteReply(reply.id)}
-                                                                className="text-gray-300 hover:text-red-500 transition-colors"
+                                                                className="text-gray-300 transition-colors hover:text-red-500"
                                                                 title="답글 삭제"
                                                             >
                                                                 <Trash2 className="size-3" />
