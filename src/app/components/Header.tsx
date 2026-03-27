@@ -1,7 +1,6 @@
-import { Accessibility, LogIn, MessageSquare, User } from 'lucide-react'
+import { Accessibility, LogIn, LogOut, MessageSquare, SunIcon, User } from 'lucide-react'
 import { Link } from 'react-router'
 import { useAuth } from '../contexts/AuthContext'
-import ThemeButton from './header/theme-button'
 
 export function Header() {
     const { user, logout } = useAuth()
@@ -20,7 +19,9 @@ export function Header() {
                         </div>
                     </Link>
                     <div className="flex items-center gap-3">
-                        <ThemeButton />
+                        <div className="hover:bg-muted cursor-pointer rounded-full p-2">
+                            <SunIcon />
+                        </div>
                         <Link
                             to="/community"
                             className="flex items-center gap-2 rounded-lg border-2 border-purple-500 px-4 py-2 text-purple-600 transition-colors hover:bg-purple-50"
