@@ -33,91 +33,91 @@
 
 ## 2. 폴더 트리
 ```
-  src/
+ src/
 ├── app/
 │   ├── components/
-│   │   ├── comment/
-│   │   │   ├── comment-editor.tsx
-│   │   │   ├── comment-item.tsx
-│   │   │   └── comment-list.tsx
+│   │   ├── comment/                          # 댓글 관련 컴포넌트
+│   │   │   ├── comment-editor.tsx            # 댓글 작성/수정 에디터
+│   │   │   ├── comment-item.tsx              # 댓글 단일 아이템
+│   │   │   └── comment-list.tsx              # 댓글 목록
 │   │   ├── figma/
-│   │   │   └── ImageWithFallback.tsx
+│   │   │   └── ImageWithFallback.tsx         # 이미지 로드 실패 시 대체 이미지 표시
 │   │   ├── modal/
-│   │   │   ├── alert-modal.tsx
-│   │   │   └── post-editor-modal.tsx
-│   │   ├── post/
-│   │   │   ├── create-post-button.tsx
-│   │   │   ├── delete-post-button.tsx
-│   │   │   ├── edit-post-button.tsx
-│   │   │   ├── like-post-button.tsx
-│   │   │   ├── post-feed.tsx
-│   │   │   └── post-item.tsx
-│   │   ├── ui/                          # shadcn/ui 컴포넌트
-│   │   ├── Community.tsx
-│   │   ├── FacilityDetail.tsx
-│   │   ├── Header.tsx
-│   │   ├── Home.tsx
-│   │   ├── Login.tsx
-│   │   ├── LoginWrapper.tsx
-│   │   ├── MyPage.tsx
-│   │   ├── NotFound.tsx
-│   │   ├── PostDetailPage.tsx
-│   │   ├── Register.tsx
-│   │   ├── RegisterWrapper.tsx
-│   │   ├── Root.tsx
-│   │   ├── fallback.tsx
-│   │   └── loader.tsx
+│   │   │   ├── alert-modal.tsx               # 확인/취소 알림 모달
+│   │   │   └── post-editor-modal.tsx         # 게시글 작성/수정 모달
+│   │   ├── post/                             # 게시글 관련 컴포넌트
+│   │   │   ├── create-post-button.tsx        # 게시글 작성 버튼
+│   │   │   ├── delete-post-button.tsx        # 게시글 삭제 버튼
+│   │   │   ├── edit-post-button.tsx          # 게시글 수정 버튼
+│   │   │   ├── like-post-button.tsx          # 게시글 좋아요 버튼
+│   │   │   ├── post-feed.tsx                 # 게시글 목록 피드
+│   │   │   └── post-item.tsx                 # 게시글 단일 아이템
+│   │   ├── ui/                               # shadcn/ui 기본 UI 컴포넌트
+│   │   ├── Community.tsx                     # 자유게시판 페이지
+│   │   ├── FacilityDetail.tsx                # 시설 상세 페이지
+│   │   ├── Header.tsx                        # 상단 네비게이션 바
+│   │   ├── Home.tsx                          # 메인 홈 페이지
+│   │   ├── Login.tsx                         # 로그인 폼
+│   │   ├── LoginWrapper.tsx                  # 로그인 페이지 래퍼
+│   │   ├── MyPage.tsx                        # 마이페이지 (프로필 수정)
+│   │   ├── NotFound.tsx                      # 404 페이지
+│   │   ├── PostDetailPage.tsx                # 게시글 상세 페이지
+│   │   ├── Register.tsx                      # 회원가입 폼
+│   │   ├── RegisterWrapper.tsx               # 회원가입 페이지 래퍼
+│   │   ├── Root.tsx                          # 앱 루트 레이아웃 (Provider 묶음)
+│   │   ├── fallback.tsx                      # 에러 발생 시 폴백 UI
+│   │   └── loader.tsx                        # 로딩 스피너
 │   ├── contexts/
-│   │   └── AuthContext.tsx
+│   │   └── AuthContext.tsx                   # 로그인/로그아웃/회원가입 전역 상태
 │   ├── data/
-│   │   └── facilities.tsx
+│   │   └── facilities.tsx                    # 시설 정적 데이터
 │   ├── services/
-│   │   ├── auth.ts
-│   │   ├── reviews.ts
-│   │   └── user.ts
+│   │   ├── auth.ts                           # Supabase 인증 API (로그인/회원가입/프로필)
+│   │   ├── reviews.ts                        # 리뷰 관련 API
+│   │   └── user.ts                           # 유저 정보 관련 API
 │   ├── util/
-│   │   └── time.ts
-│   └── routes.tsx
+│   │   └── time.ts                           # 날짜/시간 포맷 유틸
+│   └── routes.tsx                            # 라우트 정의
 ├── constants/
-│   └── api-codes.ts
+│   └── api-codes.ts                          # API 열거형 상수
 ├── hooks/
-│   ├── mutations/
+│   ├── mutations/                            # 데이터 변경 훅 (CUD)
 │   │   ├── comment/
-│   │   │   ├── use-create-comment.ts
-│   │   │   ├── use-delete-comment.ts
-│   │   │   └── use-update-comment.ts
+│   │   │   ├── use-create-comment.ts         # 댓글 생성
+│   │   │   ├── use-delete-comment.ts         # 댓글 삭제
+│   │   │   └── use-update-comment.ts         # 댓글 수정
 │   │   └── post/
-│   │       ├── use-create-post.ts
-│   │       ├── use-delete-post.ts
-│   │       ├── use-toggle-post-like.ts
-│   │       └── use-update-post.ts
-│   ├── queries/
-│   │   ├── query-keys.ts
-│   │   ├── use-comments-data.ts
-│   │   ├── use-post-data.ts
-│   │   ├── use-posts-data.ts
-│   │   └── use-user-nickname.ts
-│   ├── usePlaces.ts
-│   └── useReviews.ts
+│   │       ├── use-create-post.ts            # 게시글 생성
+│   │       ├── use-delete-post.ts            # 게시글 삭제
+│   │       ├── use-toggle-post-like.ts       # 게시글 좋아요 토글
+│   │       └── use-update-post.ts            # 게시글 수정
+│   ├── queries/                              # 데이터 조회 훅 (R)
+│   │   ├── query-keys.ts                     # React Query 키 관리
+│   │   ├── use-comments-data.ts              # 댓글 목록 조회
+│   │   ├── use-post-data.ts                  # 게시글 단건 조회
+│   │   ├── use-posts-data.ts                 # 게시글 목록 조회
+│   │   └── use-user-nickname.ts              # 유저 닉네임 조회
+│   ├── usePlaces.ts                          # 장소 데이터 조회 훅
+│   └── useReviews.ts                         # 리뷰 데이터 조회 훅
 ├── provider/
-│   └── modal-provider.tsx
+│   └── modal-provider.tsx                    # 모달 전역 Provider
 ├── store/
-│   ├── alert-modal.ts
-│   └── post-editor-modal.ts
+│   ├── alert-modal.ts                        # 알림 모달 Zustand 상태
+│   └── post-editor-modal.ts                  # 게시글 에디터 모달 Zustand 상태
 ├── styles/
-│   ├── fonts.css
-│   ├── index.css
-│   ├── tailwind.css
-│   └── theme.css
+│   ├── fonts.css                             # 폰트 정의
+│   ├── index.css                             # 글로벌 스타일
+│   ├── tailwind.css                          # Tailwind 설정
+│   └── theme.css                             # 테마 변수
 ├── supabase/
 │   ├── query/
-│   │   ├── post-comments.ts
-│   │   ├── post-images.ts
-│   │   └── post.ts
-│   └── supabase.ts
-├── database.types.ts
-├── main.tsx
-└── types.ts
+│   │   ├── post-comments.ts                  # 댓글 Supabase 쿼리
+│   │   ├── post-images.ts                    # 게시글 이미지 Supabase 쿼리
+│   │   └── post.ts                           # 게시글 Supabase 쿼리
+│   └── supabase.ts                           # Supabase 클라이언트 초기화
+├── database.types.ts                         # Supabase DB 타입 정의
+├── main.tsx                                  # 앱 진입점
+└── types.ts                                  # 공통 타입 정의
 
 ```
 
