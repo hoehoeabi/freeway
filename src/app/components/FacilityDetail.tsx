@@ -53,6 +53,7 @@ export function FacilityDetail() {
     const { id } = useParams<{ id: string }>()
     const { user } = useAuth()
     const [sortBy, setSortBy] = useState<'latest' | 'likes'>('latest')
+    const [openAssistKey, setOpenAssistKey] = useState<string | null>(null)
     const {
         reviews,
         loading,
@@ -311,7 +312,7 @@ export function FacilityDetail() {
                 <span>목록으로</span>
             </Link>
 
-            <div className="overflow-hidden rounded-2xl bg-white shadow-lg">
+            <div className="rounded-2xl bg-white shadow-lg">
                 {/* 이미지 */}
                 <div className="relative h-96">
                     <ImageWithFallback
@@ -355,30 +356,41 @@ export function FacilityDetail() {
                             </p>
                         </div>
 
-                        {facility.tel && (
-                            <div className="flex items-center gap-3">
-                                <Phone className="size-5 text-orange-600" />
-                                <p>{facility.tel}</p>
-                            </div>
-                        )}
+                        <div className="flex items-center gap-3">
+                            <Phone className="size-5 text-orange-600" />
+                            <p>{facility.tel?.trim() || '없음'}</p>
+                        </div>
                     </div>
 
                     {/* 접근성 */}
-                    <div>
-                        <h2 className="mb-3 flex items-center gap-2 text-2xl">
-                            <Accessibility className="size-6 text-blue-500" />
-                            편의시설
-                        </h2>
+                    <div className="grid grid-cols-2 gap-3 md:grid-cols-3">
+                        {activeAssistTypes.map(([key, label]) => {
+                            const isOpen = openAssistKey === key
+                            const detail = facility[key as keyof Facility]
 
-                        <div className="grid grid-cols-2 gap-3 md:grid-cols-3">
-                            {activeAssistTypes.map(([key, label]) => (
-                                <div key={key} className="rounded-lg bg-blue-50 p-3">
-                                    {label}
+                            return (
+                                <div key={key} className="relative">
+                                    <button
+                                        type="button"
+                                        onClick={() => setOpenAssistKey((prev) => (prev === key ? null : key))}
+                                        className={`w-full rounded-lg p-3 text-left transition ${
+                                            isOpen ? 'bg-blue-100 ring-2 ring-blue-300' : 'bg-blue-50 hover:bg-blue-100'
+                                        }`}
+                                    >
+                                        {label}
+                                    </button>
+
+                                    {isOpen && (
+                                        <div className="absolute top-full left-6 z-20 mt-3 w-80">
+                                            <div className="relative rounded-xl border border-blue-100 bg-white px-4 py-3 text-sm leading-6 break-words whitespace-pre-line text-gray-700 shadow-lg">
+                                                <div className="absolute -top-2 left-4 h-4 w-4 rotate-45 border-t border-l border-blue-100 bg-white" />
+                                                {detail || '상세 정보 없음'}
+                                            </div>
+                                        </div>
+                                    )}
                                 </div>
-                            ))}
-                        </div>
-
-                        {activeAssistTypes.length === 0 && <p className="text-gray-400">등록된 편의시설 정보 없음</p>}
+                            )
+                        })}
                     </div>
                 </div>
             </div>
