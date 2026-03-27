@@ -1,3 +1,4 @@
+import UserNickname from '@/app/components/UserNickname'
 import { supabase } from '@/supabase/supabase'
 import { Accessibility, ArrowLeft, Camera, Heart, MapPin, Phone, Send, Trash2 } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
@@ -82,6 +83,7 @@ export function FacilityDetail() {
     const [isSubmitting, setIsSubmitting] = useState(false)
     const [error, setError] = useState<string | null>(null)
     const [replyInputs, setReplyInputs] = useState<{ [key: string]: string }>({})
+    const [expandedComments, setExpandedComments] = useState<{ [key: string]: boolean }>({})
 
     // 북마크 상태
     const [isBookmarked, setIsBookmarked] = useState(false)
@@ -236,7 +238,17 @@ export function FacilityDetail() {
         const result = await addReply(reviewId, user.id, content)
         if (result.success) {
             setReplyInputs((prev) => ({ ...prev, [reviewId]: '' }))
+            // 답글 작성 성공 시 해당 리뷰의 댓글 섹션을 자동으로 엽니다.
+            setExpandedComments((prev) => ({ ...prev, [reviewId]: true }))
         }
+    }
+
+    // 답글 토글 핸들러
+    const toggleComments = (reviewId: string) => {
+        setExpandedComments((prev) => ({
+            ...prev,
+            [reviewId]: !prev[reviewId],
+        }))
     }
 
     // 리뷰 삭제 핸들러
@@ -562,9 +574,11 @@ export function FacilityDetail() {
                             <div key={review.id} className="space-y-3 border-b border-gray-100 pb-6 last:border-0">
                                 <div className="flex items-center justify-between">
                                     <div className="flex items-center gap-2">
-                                        <span className="font-bold text-gray-800">
-                                            사용자 {review.user_id.slice(0, 4)}
-                                        </span>
+                                        <UserNickname
+                                            userId={review.user_id}
+                                            fallback="사용자"
+                                            className="font-bold text-gray-800"
+                                        />
                                         {user?.id === review.user_id && (
                                             <button
                                                 onClick={() => handleDeleteReview(review.id)}
@@ -633,8 +647,8 @@ export function FacilityDetail() {
                                     </div>
                                 )}
 
-                                {/* 좋아요 버튼 */}
-                                <div className="pt-2">
+                                {/* 좋아요 및 답글 토글 버튼 */}
+                                <div className="flex flex-col items-start gap-3 pt-2">
                                     <button
                                         onClick={() => user && toggleLikeReview(review.id, user.id)}
                                         disabled={!user}
@@ -647,40 +661,53 @@ export function FacilityDetail() {
                                         <Heart className={`size-4 ${review.is_liked ? 'fill-current' : ''}`} />
                                         <span>좋아요 {review.likes || 0}</span>
                                     </button>
+
+                                    {/* 답글 토글 버튼 */}
+                                    {review.replies && review.replies.length > 0 && (
+                                        <button
+                                            onClick={() => toggleComments(review.id)}
+                                            className="ml-1 text-sm font-medium text-blue-600 hover:text-blue-700"
+                                        >
+                                            {expandedComments[review.id]
+                                                ? '답글 접기'
+                                                : `답글 ${review.replies.length}개 보기`}
+                                        </button>
+                                    )}
                                 </div>
 
-                                {/* 답글 목록 및 작성 섹션 */}
-                                <div className="mt-4 ml-4 space-y-4 border-l-2 border-gray-100 pl-4">
-                                    {/* 기존 답글 렌더링 */}
-                                    {review.replies && review.replies.length > 0 && (
-                                        <div className="space-y-3">
-                                            {review.replies.map((reply) => (
-                                                <div key={reply.id} className="text-sm">
-                                                    <div className="mb-1 flex items-center gap-2">
-                                                        <span className="font-bold text-gray-700">
-                                                            익명 {reply.user_id.slice(0, 4)}
-                                                        </span>
-                                                        <span className="text-[10px] text-gray-400">
-                                                            {new Date(reply.created_at).toLocaleDateString()}
-                                                        </span>
-                                                        {user?.id === reply.user_id && (
-                                                            <button
-                                                                onClick={() => handleDeleteReply(reply.id)}
-                                                                className="text-gray-300 transition-colors hover:text-red-500"
-                                                                title="답글 삭제"
-                                                            >
-                                                                <Trash2 className="size-3" />
-                                                            </button>
-                                                        )}
-                                                    </div>
-                                                    <p className="text-gray-600">{reply.content}</p>
+                                {/* 답글 목록 섹션 (토글 가능) */}
+                                {expandedComments[review.id] && review.replies && review.replies.length > 0 && (
+                                    <div className="animate-in fade-in slide-in-from-top-2 mt-4 ml-4 space-y-3 border-l-2 border-gray-100 pl-4 duration-200">
+                                        {review.replies.map((reply) => (
+                                            <div key={reply.id} className="text-sm">
+                                                <div className="mb-1 flex items-center gap-2">
+                                                    <UserNickname
+                                                        userId={reply.user_id}
+                                                        fallback="익명"
+                                                        className="font-bold text-gray-700"
+                                                    />
+                                                    <span className="text-[10px] text-gray-400">
+                                                        {new Date(reply.created_at).toLocaleDateString()}
+                                                    </span>
+                                                    {user?.id === reply.user_id && (
+                                                        <button
+                                                            onClick={() => handleDeleteReply(reply.id)}
+                                                            className="text-gray-300 transition-colors hover:text-red-500"
+                                                            title="답글 삭제"
+                                                        >
+                                                            <Trash2 className="size-3" />
+                                                        </button>
+                                                    )}
                                                 </div>
-                                            ))}
-                                        </div>
-                                    )}
+                                                <p className="text-gray-600">{reply.content}</p>
+                                            </div>
+                                        ))}
+                                    </div>
+                                )}
 
-                                    {/* 답글 입력창 (로그인 시에만 노출) */}
-                                    {user && (
+                                {/* 답글 입력창 (항상 표시, 로그인 시) */}
+                                {user && (
+                                    <div className="mt-4 ml-4 border-l-2 border-gray-100 pl-4">
                                         <div className="flex gap-2">
                                             <input
                                                 type="text"
@@ -703,8 +730,8 @@ export function FacilityDetail() {
                                                 등록
                                             </button>
                                         </div>
-                                    )}
-                                </div>
+                                    </div>
+                                )}
                             </div>
                         ))
                     ) : (
