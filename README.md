@@ -1,4 +1,9 @@
-# [개발 테스트 링크](https://freeway-chi.vercel.app/)
+  # 배포관련
+  - [개발 테스트 링크](https://freeway-chi.vercel.app/)<br>
+  - [배포용 레포](https://github.com/hoehoeabi/freeway/tree/develop)
+
+  ---
+  
   # 배리어플레이스
 
   This is a code bundle for 배리어플레이스. The original project is available at https://www.figma.com/design/lkY5TVfA6KbzgtrZ3NoDfH/%EB%B0%B0%EB%A6%AC%EC%96%B4%ED%94%8C%EB%A0%88%EC%9D%B4%EC%8A%A4.
