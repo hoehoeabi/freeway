@@ -230,7 +230,7 @@ export function FacilityDetail() {
 
                         <div className="flex items-center gap-3">
                             <Phone className="size-5 text-orange-600" />
-                            <p>{facility.tel?.trim() || '없음'}</p>
+                            <p>{facility.tel?.trim() || '업체로부터 제공받지 못함'}</p>
                         </div>
                     </div>
 
