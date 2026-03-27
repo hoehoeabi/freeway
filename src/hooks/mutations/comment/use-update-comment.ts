@@ -1,14 +1,13 @@
-import { queryKeys } from '@/hooks/queries/query-keys'
-import { createPost } from '@/supabase/query/post'
+import { updateComment } from '@/supabase/query/post-comments'
 import type { UseMutationCallback } from '@/types'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 
-export function useCreatePost(callbacks?: UseMutationCallback) {
+export function useUpdateComment(postId: string, callbacks?: UseMutationCallback) {
     const queryClient = useQueryClient()
     return useMutation({
-        mutationFn: createPost,
+        mutationFn: updateComment,
         onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: queryKeys.posts })
+            queryClient.invalidateQueries({ queryKey: ['comments', postId] })
             if (callbacks?.onSuccess) callbacks.onSuccess()
         },
         onError: (error) => {
