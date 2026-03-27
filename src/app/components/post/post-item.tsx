@@ -1,6 +1,6 @@
 import { useAuth } from '@/app/contexts/AuthContext'
-import { formatTimeAgo } from '@/app/lib/time'
 import { Carousel, CarouselContent, CarouselItem } from '@/app/ui2/carousel2'
+import { formatTimeAgo } from '@/app/util/time'
 import defaultAvatar from '@/assets/default-avatar.png'
 import type { Post } from '@/types'
 import { MessageCircle } from 'lucide-react'
