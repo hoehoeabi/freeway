@@ -3,7 +3,7 @@ import { useState } from 'react'
 import { Link } from 'react-router'
 import { AreaCode, ContentType, getActiveIcons } from '../../constants/api-codes'
 import { useBookmarks } from '../../hooks/useBookmark'
-import { usePlaces, type Place } from '../../hooks/usePlaces'
+import { usePlaces } from '../../hooks/usePlaces'
 import { useAuth } from '../contexts/AuthContext'
 import { ImageWithFallback } from './figma/ImageWithFallback'
 
@@ -36,6 +36,16 @@ const LOCATION_MAP: Record<string, string> = {
 }
 
 type SortType = 'latest' | 'rating' | 'review'
+
+interface Place {
+    content_id: string
+    title: string
+    address: string
+    image_url: string
+    avg_score?: number
+    review_count?: number
+    [key: string]: string | number | null | undefined
+}
 
 function PlaceCard({
     place,
