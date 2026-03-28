@@ -1,14 +1,10 @@
 import { Accessibility, ArrowDownUp, CircleParking, DoorOpen, Heart, MapPin, Star } from 'lucide-react'
 import { useState } from 'react'
 import { Link } from 'react-router'
-<<<<<<< HEAD
-import { supabase } from '../lib/supabase'
-=======
 import { AreaCode, ContentType, getActiveIcons } from '../../constants/api-codes'
 import { useBookmarks } from '../../hooks/useBookmark'
 import { usePlaces } from '../../hooks/usePlaces'
 import { useAuth } from '../contexts/AuthContext'
->>>>>>> develop
 import { ImageWithFallback } from './figma/ImageWithFallback'
 
 const CATEGORY_MAP: Record<string, string> = {

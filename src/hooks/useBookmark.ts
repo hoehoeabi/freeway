@@ -86,57 +86,55 @@ export function useBookmarks(userId?: string) {
             setBookmarks(new Set())
             return
         }
-        fetchBookmarks()
+        fetchBookmarks(userId)
     }, [userId])
 
-    async function fetchBookmarks() {
-        const { data, error } = await supabase
-            .from('bookmarks')
-            .select('place_id')
-            .eq('user_id', userId)
+    async function fetchBookmarks(uid: string) {
+        const { data, error } = await supabase.from('bookmarks').select('place_id').eq('user_id', uid)
 
         if (!error && data) {
-            setBookmarks(new Set(data.map((b) => b.place_id)))
+            setBookmarks(new Set(data.map((b) => b.place_id).filter((id): id is string => id !== null)))
         }
     }
 
-    const toggleBookmark = useCallback(async (placeId: string) => {
-        if (!userId) {
-            alert('로그인이 필요합니다.')
-            return
-        }
-        if (loadingId) return
-        setLoadingId(placeId)
-
-        try {
-            if (bookmarks.has(placeId)) {
-                const { error } = await supabase
-                    .from('bookmarks')
-                    .delete()
-                    .eq('user_id', userId)
-                    .eq('place_id', placeId)
-
-                if (error) throw error
-                setBookmarks((prev) => {
-                    const next = new Set(prev)
-                    next.delete(placeId)
-                    return next
-                })
-            } else {
-                const { error } = await supabase
-                    .from('bookmarks')
-                    .insert({ user_id: userId, place_id: placeId })
-
-                if (error) throw error
-                setBookmarks((prev) => new Set([...prev, placeId]))
+    const toggleBookmark = useCallback(
+        async (placeId: string) => {
+            if (!userId) {
+                alert('로그인이 필요합니다.')
+                return
             }
-        } catch (error) {
-            console.error('북마크 처리 실패:', error)
-            alert('북마크 처리 중 오류가 발생했습니다.')
-        } finally {
-            setLoadingId(null)
-        }
-    }, [userId, loadingId, bookmarks])
+            if (loadingId) return
+            setLoadingId(placeId)
+
+            try {
+                if (bookmarks.has(placeId)) {
+                    const { error } = await supabase
+                        .from('bookmarks')
+                        .delete()
+                        .eq('user_id', userId)
+                        .eq('place_id', placeId)
+
+                    if (error) throw error
+                    setBookmarks((prev) => {
+                        const next = new Set(prev)
+                        next.delete(placeId)
+                        return next
+                    })
+                } else {
+                    const { error } = await supabase.from('bookmarks').insert({ user_id: userId, place_id: placeId })
+
+                    if (error) throw error
+                    setBookmarks((prev) => new Set([...prev, placeId]))
+                }
+            } catch (error) {
+                console.error('북마크 처리 실패:', error)
+                alert('북마크 처리 중 오류가 발생했습니다.')
+            } finally {
+                setLoadingId(null)
+            }
+        },
+        [userId, loadingId, bookmarks],
+    )
 
     return { bookmarks, loadingId, toggleBookmark }
 }

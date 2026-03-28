@@ -1,22 +1,21 @@
-// 특정 장소의 리뷰 목록을 가져오고, 새로운 리뷰 작성, 좋아요 토글, 답글 관리 기능을 제공하는 커스텀 훅
-
 import { useEffect, useState } from 'react'
-import { reviewsService, type Review } from '../../app/services/reviews'
+import { reviewsService, type Review } from '../app/services/reviews'
 
+// 특정 장소의 리뷰 목록 관리 및 작성 기능을 제공하는 커스텀 훅
 export function useReviews(placeId: string, userId?: string, sortBy: 'latest' | 'likes' = 'latest') {
-    const [reviews, setReviews] = useState<Review[]>([]) // 리뷰 목록 상태
-    const [loading, setLoading] = useState(true) // 로딩 상태
+    const [reviews, setReviews] = useState<Review[]>([])
+    const [loading, setLoading] = useState(true)
     const [averages, setAverages] = useState({ total: 0, entrance: 0, interior: 0, facility: 0, count: 0 })
 
     useEffect(() => {
-        // 장소 ID나 정렬 방식이 변경될 때마다 리뷰를 다시 가져옴.
+        // 장소 ID나 정렬 방식이 변경될 때마다 리뷰를 다시 가져옴
         if (placeId) {
             fetchReviews()
             fetchAverages()
         }
     }, [placeId, userId, sortBy])
 
-    // Supabase에서 리뷰 데이터를 가져옴.
+    // Supabase에서 리뷰 데이터를 가져옴
     const fetchReviews = async (showLoading = true) => {
         try {
             if (showLoading) setLoading(true)
@@ -29,13 +28,13 @@ export function useReviews(placeId: string, userId?: string, sortBy: 'latest' | 
         }
     }
 
-    // 장소의 평균 평점을 가져옴.
+    // 장소의 평균 평점을 가져옴
     const fetchAverages = async () => {
         const data = await reviewsService.getAverageRatings(placeId)
         setAverages(data)
     }
 
-    // 새로운 리뷰를 작성하고 목록을 갱신함.
+    // 새로운 리뷰를 작성하고 목록을 갱신
     const addReview = async (
         currentUserId: string,
         content: string,
@@ -73,12 +72,12 @@ export function useReviews(placeId: string, userId?: string, sortBy: 'latest' | 
         return result
     }
 
-    // 이미지 업로드
+    // 이미지 업로드를 수행
     const uploadImage = async (file: File) => {
         return await reviewsService.uploadReviewImage(file)
     }
 
-    // 리뷰에 답글 추가
+    // 리뷰에 답글을 추가
     const addReply = async (reviewId: string, currentUserId: string, content: string) => {
         const result = await reviewsService.createReply(reviewId, currentUserId, content)
         if (result.success) {
@@ -87,7 +86,7 @@ export function useReviews(placeId: string, userId?: string, sortBy: 'latest' | 
         return result
     }
 
-    // 리뷰 삭제
+    // 리뷰를 삭제
     const deleteReview = async (reviewId: string, currentUserId: string) => {
         const result = await reviewsService.deleteReview(reviewId, currentUserId)
         if (result.success) {
@@ -97,7 +96,7 @@ export function useReviews(placeId: string, userId?: string, sortBy: 'latest' | 
         return result
     }
 
-    // 답글 삭제
+    // 답글을 삭제
     const deleteReply = async (replyId: string, currentUserId: string) => {
         const result = await reviewsService.deleteReply(replyId, currentUserId)
         if (result.success) {

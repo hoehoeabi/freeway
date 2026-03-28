@@ -1,6 +1,6 @@
 import { createClient } from '@supabase/supabase-js'
 import dotenv from 'dotenv'
-import { AreaCode, ContentType } from '../constants/api-codes.ts'
+import { AreaCode, ContentType } from '../src/constants/api-codes.ts'
 
 dotenv.config()
 

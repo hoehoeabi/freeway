@@ -68,6 +68,10 @@ export const BARRIER_ICONS = {
     restroom: { icon: DoorOpen, label: '장애인화장실' },
 }
 
-export function getActiveIcons(place: Record<string, string | null>) {
-    return Object.entries(BARRIER_ICONS).filter(([key]) => place[key] !== null)
+export function getActiveIcons(place: Record<string, any>) {
+    return Object.entries(BARRIER_ICONS).filter(([key]) => 
+        place[key] !== null && 
+        place[key] !== undefined && 
+        place[key] !== ''
+    )
 }

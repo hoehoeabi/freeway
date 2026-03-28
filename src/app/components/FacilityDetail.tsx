@@ -1,11 +1,10 @@
-import UserNickname from '@/app/components/UserNickname'
 import { ArrowLeft, Heart, MapPin, Phone } from 'lucide-react'
 import { useState } from 'react'
 import { Link, useParams } from 'react-router'
 import { useBookmark } from '../../hooks/useBookmark'
 import { useFacilityDetail } from '../../hooks/useFacilityDetail'
 import { useFacilityMeta } from '../../hooks/useFacilityMeta'
-import { useReviews } from '../../hooks/review/useReviews'
+import { useReviews } from '../../hooks/useReviews'
 import { useAuth } from '../contexts/AuthContext'
 import { ImageWithFallback } from './figma/ImageWithFallback'
 import { ReviewAverages } from './review/ReviewAverages'
@@ -33,8 +32,6 @@ export function FacilityDetail() {
     const { facility, loading: facilityLoading } = useFacilityDetail(id)
     const { isBookmarked, bookmarkLoading, toggleBookmark } = useBookmark(id, user?.id)
     const { contentTypeLabel, activeAssistTypes } = useFacilityMeta(facility)
-
-    // 별점 선택 컴포넌트와 별점 상태, 제출 핸들러, 답글 핸들러 등은 모두 review 폴더의 개별 컴포넌트로 이동되었습니다.
 
     if (facilityLoading) {
         return <div className="py-12 text-center">로딩중...</div>
@@ -99,7 +96,7 @@ export function FacilityDetail() {
                     </div>
 
                     <div className="grid grid-cols-2 gap-3 md:grid-cols-3">
-                        {activeAssistTypes.map(([key, label]) => {
+                        {activeAssistTypes.map(([key, label]: [string, string]) => {
                             const isOpen = openAssistKey === key
                             const detail = facility[key as keyof typeof facility]
 
@@ -139,14 +136,8 @@ export function FacilityDetail() {
                 </div>
             </div>
 
-            <div className="space-y-12 rounded-2xl bg-white p-8 shadow-lg">
-                <ReviewAverages
-                    total={averages.total}
-                    entrance={averages.entrance}
-                    interior={averages.interior}
-                    facility={averages.facility}
-                    count={averages.count}
-                />
+            <div className="space-y-8 rounded-2xl bg-white p-8 shadow-lg">
+                <ReviewAverages {...averages} />
 
                 <ReviewForm user={user} onSubmit={addReview} onUploadImage={uploadImage} />
 
