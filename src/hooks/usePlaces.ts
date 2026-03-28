@@ -13,7 +13,7 @@ interface Filters {
 }
 
 // 장소 타입 정의
-interface Place {
+export interface Place {
     content_id: string
     title: string
     address: string
@@ -29,6 +29,7 @@ interface Place {
     signguide: string | null
     avg_score?: number
     review_count?: number
+    [key: string]: string | number | null | undefined
 }
 
 const ITEMS_PER_PAGE = 20
@@ -53,25 +54,10 @@ export function usePlaces(filters: Filters, page: number = 1) {
         const useView = filters.sortType === 'rating' || filters.sortType === 'review'
         const tableName = useView ? 'places_with_score' : 'places'
 
-        let query = supabase.from(tableName).select(
-            `
-            content_id,
-            title,
-            address,
-            area_code,
-            content_type,
-            image_url,
-            wheelchair,
-            elevator,
-            restroom,
-            parking,
-            braileblock,
-            audioguide,
-            signguide
-            ${useView ? ', avg_score, review_count' : ''}
-            `,
-            { count: 'exact' },
-        )
+        const baseColumns = 'content_id, title, address, area_code, content_type, image_url, wheelchair, elevator, restroom, parking, braileblock, audioguide, signguide'
+        const selectString = useView ? `${baseColumns}, avg_score, review_count` : baseColumns
+
+        let query = supabase.from(tableName as any).select(selectString, { count: 'exact' })
 
         // 지역 필터
         if (filters.location && filters.location !== '전체') {
@@ -103,7 +89,7 @@ export function usePlaces(filters: Filters, page: number = 1) {
 
         if (error) console.error(error)
         else {
-            setPlaces(data as Place[])
+            setPlaces(data as unknown as Place[])
             setTotalCount(count ?? 0)
         }
 
