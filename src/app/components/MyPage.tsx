@@ -1,7 +1,11 @@
+import { fetchBookmarksByUser } from '@/supabase/query/bookmark'
+import { fetchPostCountByUser } from '@/supabase/query/post'
+import { useQuery } from '@tanstack/react-query'
 import { Accessibility, Calendar, Edit2, LogOut, Mail, Save, User, X } from 'lucide-react'
 import { useState } from 'react'
-import { useNavigate } from 'react-router'
+import { Link, useNavigate } from 'react-router'
 import { useAuth } from '../contexts/AuthContext'
+import { reviewsService } from '../services/reviews'
 
 export function MyPage() {
     const { user, logout, updateProfile } = useAuth()
@@ -11,8 +15,26 @@ export function MyPage() {
     const [accessibilityType, setAccessibilityType] = useState(user?.accessibilityType || '일반')
     const [message, setMessage] = useState('')
     const [error, setError] = useState('')
+    const [nickname, setNickname] = useState(user?.nickname || '')
 
     const accessibilityTypes = ['일반', '지체장애', '시각장애', '청각장애', '발달장애', '기타']
+
+    const { data: postCount = 0 } = useQuery({
+        queryKey: ['postCount', user?.id ?? ''],
+        queryFn: () => fetchPostCountByUser(user!.id),
+        enabled: !!user,
+    })
+    const { data: bookmarkCount = 0 } = useQuery({
+        queryKey: ['bookmarkCount', user?.id ?? ''],
+        queryFn: () => fetchBookmarksByUser(user!.id),
+        enabled: !!user,
+    })
+    const { data: reviewCount = 0 } = useQuery({
+        queryKey: ['reviewCount', user?.id ?? ''],
+        queryFn: () => reviewsService.getReviewCountByUser(user!.id),
+        enabled: !!user,
+    })
+
 
     if (!user) {
         navigate('/login')
@@ -22,15 +44,20 @@ export function MyPage() {
     const handleSave = async () => {
         setError('')
         setMessage('')
+        //예외발생
+        try {
+            const result = await updateProfile({ name, nickname, accessibilityType })
 
-        const result = await updateProfile({ name, accessibilityType })
-
-        if (result.success) {
-            setMessage(result.message)
-            setIsEditing(false)
-            setTimeout(() => setMessage(''), 3000)
-        } else {
-            setError(result.message)
+            if (result.success) {
+                setMessage(result.message)
+                setIsEditing(false)
+                setTimeout(() => setMessage(''), 3000)
+            } else {
+                setError(result.message)
+            }
+        } catch (err) {
+            console.error(err)
+            setError('저장 중 오류가 발생했습니다.')
         }
     }
 
@@ -48,15 +75,15 @@ export function MyPage() {
     }
 
     return (
-        <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white py-12">
+        <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white py-12 dark:bg-gray-900 dark:from-gray-900 dark:to-gray-900">
             <div className="container mx-auto max-w-4xl px-4">
                 {/* Header */}
                 <div className="mb-8 text-center">
                     <div className="mb-4 inline-block rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 p-6">
                         <User className="size-16 text-white" />
                     </div>
-                    <h1 className="mb-2 text-3xl">마이페이지</h1>
-                    <p className="text-gray-600">프로필 정보를 관리하세요</p>
+                    <h1 className="mb-2 text-3xl dark:text-white">마이페이지</h1>
+                    <p className="text-gray-600 dark:text-gray-400">프로필 정보를 관리하세요</p>
                 </div>
 
                 {/* Success Message */}
@@ -74,7 +101,7 @@ export function MyPage() {
                 )}
 
                 {/* Profile Card */}
-                <div className="overflow-hidden rounded-2xl bg-white shadow-lg">
+                <div className="overflow-hidden rounded-2xl bg-white shadow-lg dark:bg-gray-800">
                     {/* Header */}
                     <div className="bg-gradient-to-r from-blue-500 to-indigo-600 p-6 text-white">
                         <div className="flex items-center justify-between">
@@ -103,6 +130,7 @@ export function MyPage() {
                                         onClick={() => {
                                             setIsEditing(false)
                                             setName(user.name)
+                                            setNickname(user.nickname)
                                             setAccessibilityType(user.accessibilityType)
                                         }}
                                         className="flex items-center gap-2 rounded-lg bg-white/20 px-4 py-2 transition-colors hover:bg-white/30"
@@ -119,29 +147,38 @@ export function MyPage() {
                     <div className="space-y-6 p-8">
                         {/* Name */}
                         <div>
-                            <label className="mb-2 block flex items-center gap-2 text-sm text-gray-700">
-                                <User className="size-4 text-gray-500" />
+                            <label className="mb-2 block flex items-center gap-2 text-sm text-gray-700 dark:text-gray-400">
+                                <User className="size-4 text-gray-500 dark:text-gray-400" />
                                 이름
+                            </label>
+                            <div className="rounded-lg bg-gray-50 px-4 py-3 dark:bg-gray-700 dark:text-gray-200">{user.name}</div>
+                        </div>
+                        {/* Nickname */}
+                        <div>
+                            <label className="mb-2 block flex items-center gap-2 text-sm text-gray-700 dark:text-gray-400">
+                                <User className="size-4 text-gray-500 dark:text-gray-400" />
+                                닉네임
                             </label>
                             {isEditing ? (
                                 <input
                                     type="text"
-                                    value={name}
-                                    onChange={(e) => setName(e.target.value)}
-                                    className="w-full rounded-lg border border-gray-300 px-4 py-3 focus:border-transparent focus:ring-2 focus:ring-blue-500"
+                                    value={nickname}
+                                    onChange={(e) => setNickname(e.target.value)}
+                                    placeholder="한글 2~8자 또는 영문/숫자 2~14자"
+                                    className="w-full rounded-lg border border-gray-300 px-4 py-3 focus:border-transparent focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 dark:placeholder-gray-400"
                                 />
                             ) : (
-                                <div className="rounded-lg bg-gray-50 px-4 py-3">{user.name}</div>
+                                <div className="rounded-lg bg-gray-50 px-4 py-3 dark:bg-gray-700 dark:text-gray-200">{user.nickname}</div>
                             )}
                         </div>
 
                         {/* Email */}
                         <div>
-                            <label className="mb-2 block flex items-center gap-2 text-sm text-gray-700">
-                                <Mail className="size-4 text-gray-500" />
+                            <label className="mb-2 block flex items-center gap-2 text-sm text-gray-700 dark:text-gray-400">
+                                <Mail className="size-4 text-gray-500 dark:text-gray-400" />
                                 이메일
                             </label>
-                            <div className="rounded-lg bg-gray-50 px-4 py-3 text-gray-500">
+                            <div className="rounded-lg bg-gray-50 px-4 py-3 text-gray-500 dark:bg-gray-700 dark:text-gray-400">
                                 {user.email}
                                 <span className="ml-2 text-xs">(변경 불가)</span>
                             </div>
@@ -149,15 +186,15 @@ export function MyPage() {
 
                         {/* Accessibility Type */}
                         <div>
-                            <label className="mb-2 block flex items-center gap-2 text-sm text-gray-700">
-                                <Accessibility className="size-4 text-gray-500" />
+                            <label className="mb-2 block flex items-center gap-2 text-sm text-gray-700 dark:text-gray-400">
+                                <Accessibility className="size-4 text-gray-500 dark:text-gray-400" />
                                 접근성 유형
                             </label>
                             {isEditing ? (
                                 <select
                                     value={accessibilityType}
                                     onChange={(e) => setAccessibilityType(e.target.value)}
-                                    className="w-full appearance-none rounded-lg border border-gray-300 bg-white px-4 py-3 focus:border-transparent focus:ring-2 focus:ring-blue-500"
+                                    className="w-full appearance-none rounded-lg border border-gray-300 bg-white px-4 py-3 focus:border-transparent focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200"
                                 >
                                     {accessibilityTypes.map((type) => (
                                         <option key={type} value={type}>
@@ -166,7 +203,7 @@ export function MyPage() {
                                     ))}
                                 </select>
                             ) : (
-                                <div className="rounded-lg bg-blue-50 px-4 py-3 font-semibold text-blue-700">
+                                <div className="rounded-lg bg-blue-50 px-4 py-3 font-semibold text-blue-700 dark:bg-blue-900/30 dark:text-blue-300">
                                     {user.accessibilityType}
                                 </div>
                             )}
@@ -174,11 +211,11 @@ export function MyPage() {
 
                         {/* Created At */}
                         <div>
-                            <label className="mb-2 block flex items-center gap-2 text-sm text-gray-700">
-                                <Calendar className="size-4 text-gray-500" />
+                            <label className="mb-2 block flex items-center gap-2 text-sm text-gray-700 dark:text-gray-400">
+                                <Calendar className="size-4 text-gray-500 dark:text-gray-400" />
                                 가입일
                             </label>
-                            <div className="rounded-lg bg-gray-50 px-4 py-3 text-gray-500">
+                            <div className="rounded-lg bg-gray-50 px-4 py-3 text-gray-500 dark:bg-gray-700 dark:text-gray-400">
                                 {formatDate(user.createdAt)}
                             </div>
                         </div>
@@ -186,26 +223,33 @@ export function MyPage() {
                 </div>
 
                 {/* Stats Card */}
+
                 <div className="mt-6 grid grid-cols-1 gap-4 md:grid-cols-3">
-                    <div className="rounded-xl bg-white p-6 text-center shadow">
-                        <div className="mb-2 text-3xl">0</div>
-                        <div className="text-sm text-gray-600">작성한 리뷰</div>
-                    </div>
-                    <div className="rounded-xl bg-white p-6 text-center shadow">
-                        <div className="mb-2 text-3xl">0</div>
-                        <div className="text-sm text-gray-600">저장한 장소</div>
-                    </div>
-                    <div className="rounded-xl bg-white p-6 text-center shadow">
-                        <div className="mb-2 text-3xl">0</div>
-                        <div className="text-sm text-gray-600">도움이 된 리뷰</div>
-                    </div>
+                    <Link to="/reviews" className="block">
+                        <div className="rounded-xl bg-white p-6 text-center shadow transition-colors hover:bg-gray-200 dark:bg-gray-800 dark:text-white dark:hover:bg-gray-700">
+                            <div className="mb-2 text-3xl">{reviewCount}</div>
+                            <div className="text-sm text-gray-600 dark:text-gray-400">작성한 리뷰</div>
+                        </div>
+                    </Link>
+                    <Link to="/bookmark" className="block">
+                        <div className="rounded-xl bg-white p-6 text-center shadow transition-colors hover:bg-gray-200 dark:bg-gray-800 dark:text-white dark:hover:bg-gray-700">
+                            <div className="mb-2 text-3xl">{bookmarkCount}</div>
+                            <div className="text-sm text-gray-600 dark:text-gray-400">저장한 장소</div>
+                        </div>
+                    </Link>
+                    <Link to={`/community?userId=${user.id}`} className="block">
+                        <div className="rounded-xl bg-white p-6 text-center shadow transition-colors hover:bg-gray-200 dark:bg-gray-800 dark:text-white dark:hover:bg-gray-700">
+                            <div className="mb-2 text-3xl">{postCount}</div>
+                            <div className="text-sm text-gray-600 dark:text-gray-400">작성한 게시물</div>
+                        </div>
+                    </Link>
                 </div>
 
                 {/* Logout Button */}
                 <div className="mt-8 text-center">
                     <button
                         onClick={handleLogout}
-                        className="inline-flex items-center gap-2 rounded-lg border-2 border-red-200 px-6 py-3 text-red-600 transition-colors hover:bg-red-50"
+                        className="inline-flex items-center gap-2 rounded-lg border-2 border-red-200 px-6 py-3 text-red-600 transition-colors hover:bg-red-50 dark:border-red-800 dark:text-red-400 dark:hover:bg-red-900/20"
                     >
                         <LogOut className="size-5" />
                         <span>로그아웃</span>
