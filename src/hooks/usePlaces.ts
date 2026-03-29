@@ -45,14 +45,14 @@ export function usePlaces(filters: Filters, page: number = 1) {
     }, [filtersKey, page])
 
     async function fetchPlaces() {
-        setLoading(true)
+      setLoading(true)
 
         const from = (page - 1) * ITEMS_PER_PAGE
         const to = from + ITEMS_PER_PAGE - 1
 
         const tableName = 'places_with_score'
         const baseColumns = 'content_id, title, address, area_code, content_type, image_url, wheelchair, elevator, restroom, parking, braileblock, audioguide, signguide'
-        const selectString = `${baseColumns}, avg_score, review_count`  
+        const selectString = `${baseColumns}, avg_score, review_count` 
 
         let query = supabase.from(tableName as any).select(selectString, { count: 'exact' })
 
