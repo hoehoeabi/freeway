@@ -1,6 +1,6 @@
 // 리뷰 작성 시 진입로, 내부 시설, 편의시설 등에 대한 별점(1-5점)을 선택할 수 있는 입력 컴포넌트
 
-import { Accessibility } from 'lucide-react'
+import { Star } from 'lucide-react'
 import { useState } from 'react'
 
 interface StarRatingInputProps {
@@ -26,7 +26,7 @@ export function StarRatingInput({ label, value, onChange }: StarRatingInputProps
                             (hover || value) >= star ? 'text-yellow-400' : 'text-gray-300'
                         }`}
                     >
-                        <Accessibility className={`size-6 ${(hover || value) >= star ? 'fill-current' : ''}`} />
+                        <Star className={`size-6 ${(hover || value) >= star ? 'fill-current' : ''}`} />
                     </button>
                 ))}
             </div>
