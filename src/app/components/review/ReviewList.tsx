@@ -1,7 +1,7 @@
 // 장소에 대한 리뷰 목록을 최신순 또는 좋아요순으로 정렬하여 보여주는 관리 컴포넌트
 
-import { ReviewItem } from './ReviewItem'
 import { type Review } from '@/app/services/reviews'
+import { ReviewItem } from './ReviewItem'
 
 interface ReviewListProps {
     reviews: Review[]
@@ -29,12 +29,12 @@ export function ReviewList({
     return (
         <div className="space-y-6">
             <div className="flex items-center justify-between">
-                <h2 className="flex items-center gap-2 text-2xl font-bold">리뷰 ({reviews.length})</h2>
+                <h2 className="flex items-center gap-2 text-2xl font-bold dark:text-black">리뷰 ({reviews.length})</h2>
                 <div className="flex gap-2">
                     <button
                         onClick={() => onSortChange('latest')}
                         className={`text-sm font-medium transition-colors ${
-                            sortBy === 'latest' ? 'text-blue-600' : 'text-gray-400 hover:text-gray-600'
+                            sortBy === 'latest' ? 'text-blue-600' : 'text-gray-400 hover:text-gray-600 dark:text-black'
                         }`}
                     >
                         최신순
@@ -43,7 +43,7 @@ export function ReviewList({
                     <button
                         onClick={() => onSortChange('likes')}
                         className={`text-sm font-medium transition-colors ${
-                            sortBy === 'likes' ? 'text-blue-600' : 'text-gray-400 hover:text-gray-600'
+                            sortBy === 'likes' ? 'text-blue-600' : 'text-gray-400 hover:text-gray-600 dark:text-black'
                         }`}
                     >
                         좋아요순
@@ -52,7 +52,7 @@ export function ReviewList({
             </div>
 
             {loading && reviews.length === 0 ? (
-                <div className="py-12 text-center text-gray-400">리뷰를 불러오는 중입니다...</div>
+                <div className="py-12 text-center text-gray-400 dark:text-black">리뷰를 불러오는 중입니다...</div>
             ) : reviews.length > 0 ? (
                 reviews.map((review) => (
                     <ReviewItem
@@ -66,7 +66,7 @@ export function ReviewList({
                     />
                 ))
             ) : (
-                <p className="py-10 text-center text-gray-400">첫 번째 리뷰를 남겨보세요!</p>
+                <p className="py-10 text-center text-gray-400 dark:text-black">첫 번째 리뷰를 남겨보세요!</p>
             )}
         </div>
     )
