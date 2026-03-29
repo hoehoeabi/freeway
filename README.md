@@ -41,6 +41,7 @@
 ### App/component/facility : 각 가게의 상세피이지
 ### App/component/facility/review : 각 가게의 상세페이지에 달린 리뷰
 ### App/component/post : 사용자들이 사용하는 자유게시판 
+### App/component/auth : 로그인 회원가입 마이페이지 등 사용자 정보들을 보여주는 화면에 쓰이는 컴포넌트들
 ```
 src
 ├── App.css
