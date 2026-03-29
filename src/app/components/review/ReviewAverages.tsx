@@ -1,4 +1,7 @@
-import { Accessibility } from 'lucide-react'
+// 전체 평점 및 각 카테고리별 평균 점수를 시각적으로 보여주는 컴포넌트
+
+import { Star } from 'lucide-react'
+
 
 interface ReviewAveragesProps {
     total: number
@@ -18,7 +21,7 @@ export function ReviewAverages({ total, entrance, interior, facility, count }: R
                 <span className="text-4xl font-bold text-gray-800 dark:text-black">{total.toFixed(1)}</span>
                 <div className="mt-1 flex gap-0.5">
                     {[1, 2, 3, 4, 5].map((s) => (
-                        <Accessibility
+                        <Star
                             key={s}
                             className={`size-4 ${
                                 s <= Math.round(total) ? 'fill-current text-yellow-400' : 'text-gray-200'

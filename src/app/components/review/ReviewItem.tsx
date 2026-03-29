@@ -1,6 +1,6 @@
 import UserNickname from '@/app/components/UserNickname'
 import { type Review } from '@/app/services/reviews'
-import { Accessibility, Heart, Trash2 } from 'lucide-react'
+import { Star, Heart, Trash2 } from 'lucide-react'
 import { useState } from 'react'
 import { ImageWithFallback } from '../figma/ImageWithFallback'
 
@@ -55,7 +55,7 @@ export function ReviewItem({ review, user, onDeleteReview, onToggleLike, onAddRe
                     <span className="rounded bg-blue-50 px-2 py-0.5 text-blue-600">진입로</span>
                     <div className="flex gap-0.5">
                         {[1, 2, 3, 4, 5].map((s) => (
-                            <Accessibility
+                            <Star
                                 key={s}
                                 className={`size-3 ${
                                     s <= review.rating_entrance ? 'fill-current text-yellow-400' : 'text-gray-200'
@@ -68,7 +68,7 @@ export function ReviewItem({ review, user, onDeleteReview, onToggleLike, onAddRe
                     <span className="rounded bg-orange-50 px-2 py-0.5 text-orange-600">내부</span>
                     <div className="flex gap-0.5">
                         {[1, 2, 3, 4, 5].map((s) => (
-                            <Accessibility
+                            <Star
                                 key={s}
                                 className={`size-3 ${
                                     s <= review.rating_interior ? 'fill-current text-yellow-400' : 'text-gray-200'
@@ -81,7 +81,7 @@ export function ReviewItem({ review, user, onDeleteReview, onToggleLike, onAddRe
                     <span className="rounded bg-green-50 px-2 py-0.5 text-green-600">편의시설</span>
                     <div className="flex gap-0.5">
                         {[1, 2, 3, 4, 5].map((s) => (
-                            <Accessibility
+                            <Star
                                 key={s}
                                 className={`size-3 ${
                                     s <= review.rating_facility ? 'fill-current text-yellow-400' : 'text-gray-200'

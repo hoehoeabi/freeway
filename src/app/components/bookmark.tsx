@@ -2,6 +2,7 @@ import { fetchBookmarks } from '@/supabase/query/bookmark'
 import { useQuery } from '@tanstack/react-query'
 import { Link } from 'react-router'
 import { useAuth } from '../contexts/AuthContext'
+import { ImageWithFallback } from './figma/ImageWithFallback'
 
 export function Bookmark() {
     const { user } = useAuth()
@@ -22,8 +23,8 @@ export function Bookmark() {
                     bookmarks.map((bookmark) => (
                         <Link key={bookmark.id} to={`/facility/${bookmark.place_id}`}>
                             <div className="cursor-pointer overflow-hidden rounded-xl bg-white shadow-md transition-shadow hover:shadow-lg dark:bg-gray-800">
-                                <img
-                                    src={bookmark.places?.image_url ?? ''}
+                                <ImageWithFallback
+                                    src={bookmark.places?.image_url ?? undefined}
                                     alt={bookmark.places?.title ?? ''}
                                     className="h-48 w-full object-cover"
                                 />
