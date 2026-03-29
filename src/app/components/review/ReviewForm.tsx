@@ -85,7 +85,7 @@ export function ReviewForm({ user, onSubmit, onUploadImage }: ReviewFormProps) {
     if (!user) {
         return (
             <div className="rounded-xl bg-gray-50 p-6 text-center">
-                <p className="mb-4 text-gray-500">로그인 후 리뷰를 작성할 수 있습니다.</p>
+                <p className="mb-4 text-gray-500 dark:text-black">로그인 후 리뷰를 작성할 수 있습니다.</p>
                 <Link to="/login" className="font-medium text-blue-600 hover:underline">
                     로그인하러 가기
                 </Link>
@@ -96,7 +96,7 @@ export function ReviewForm({ user, onSubmit, onUploadImage }: ReviewFormProps) {
     return (
         <form onSubmit={handleSubmit} className="space-y-4 rounded-xl bg-gray-50 p-6">
             <div className="space-y-2">
-                <label className="text-sm font-medium text-gray-700">리뷰 남기기</label>
+                <label className="text-sm font-medium text-gray-700 dark:text-black">리뷰 남기기</label>
                 <textarea
                     value={newReview}
                     onChange={(e) => setNewReview(e.target.value)}
@@ -107,7 +107,7 @@ export function ReviewForm({ user, onSubmit, onUploadImage }: ReviewFormProps) {
                         }
                     }}
                     placeholder="이 장소에 대한 경험을 공유해주세요."
-                    className="min-h-[100px] w-full resize-none rounded-lg border border-gray-200 p-4 transition-all outline-none focus:ring-2 focus:ring-blue-500"
+                    className="min-h-[100px] w-full resize-none rounded-lg border border-gray-200 p-4 transition-all outline-none focus:ring-2 focus:ring-blue-500 dark:text-black"
                 />
             </div>
 
@@ -159,12 +159,12 @@ export function ReviewForm({ user, onSubmit, onUploadImage }: ReviewFormProps) {
                     <button
                         type="button"
                         onClick={() => fileInputRef.current?.click()}
-                        className="flex items-center gap-2 rounded-lg border border-gray-200 bg-white px-4 py-2 text-sm transition-colors hover:bg-gray-100"
+                        className="flex items-center gap-2 rounded-lg border border-gray-200 bg-white px-4 py-2 text-sm transition-colors hover:bg-gray-100 dark:text-black"
                     >
                         <Camera className="size-4" />
                         사진 첨부
                     </button>
-                    <span className="text-xs text-gray-500">{selectedImages.length}개 선택됨</span>
+                    <span className="text-xs text-gray-500 dark:text-black">{selectedImages.length}개 선택됨</span>
                 </div>
 
                 <button
