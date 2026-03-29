@@ -1,5 +1,3 @@
-// 개별 리뷰 표시, 좋아요 토글, 본인 리뷰 삭제, 댓글 목록 조회 및 작성 기능을 포함하는 단위 컴포넌트
-
 import UserNickname from '@/app/components/UserNickname'
 import { type Review } from '@/app/services/reviews'
 import { Accessibility, Heart, Trash2 } from 'lucide-react'
@@ -32,7 +30,11 @@ export function ReviewItem({ review, user, onDeleteReview, onToggleLike, onAddRe
         <div className="space-y-3 border-b border-gray-100 pb-6 last:border-0">
             <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                    <UserNickname userId={review.user_id} fallback="사용자" className="font-bold text-gray-800" />
+                    <UserNickname
+                        userId={review.user_id}
+                        fallback="사용자"
+                        className="font-bold text-gray-800 dark:text-black"
+                    />
                     {user?.id === review.user_id && (
                         <button
                             onClick={() => onDeleteReview(review.id, user.id)}
@@ -43,10 +45,12 @@ export function ReviewItem({ review, user, onDeleteReview, onToggleLike, onAddRe
                         </button>
                     )}
                 </div>
-                <span className="text-sm text-gray-400">{new Date(review.created_at).toLocaleDateString()}</span>
+                <span className="text-sm text-gray-400 dark:text-black">
+                    {new Date(review.created_at).toLocaleDateString()}
+                </span>
             </div>
 
-            <div className="flex flex-wrap gap-4 text-xs font-medium text-gray-500">
+            <div className="flex flex-wrap gap-4 text-xs font-medium text-gray-500 dark:text-black">
                 <div className="flex items-center gap-1">
                     <span className="rounded bg-blue-50 px-2 py-0.5 text-blue-600">진입로</span>
                     <div className="flex gap-0.5">
@@ -88,7 +92,7 @@ export function ReviewItem({ review, user, onDeleteReview, onToggleLike, onAddRe
                 </div>
             </div>
 
-            <p className="leading-relaxed text-gray-600">{review.content}</p>
+            <p className="leading-relaxed text-gray-600 dark:text-black">{review.content}</p>
 
             {review.images && review.images.length > 0 && (
                 <div className="flex flex-wrap gap-2">
@@ -107,7 +111,7 @@ export function ReviewItem({ review, user, onDeleteReview, onToggleLike, onAddRe
                     className={`flex transform items-center gap-1.5 rounded-full px-3 py-1.5 text-sm font-medium transition-all active:scale-95 ${
                         review.is_liked
                             ? 'border border-red-200 bg-red-50 text-red-600'
-                            : 'border border-gray-100 bg-gray-50 text-gray-500 hover:bg-gray-100'
+                            : 'border border-gray-100 bg-gray-50 text-gray-500 hover:bg-gray-100 dark:text-black'
                     }`}
                 >
                     <Heart className={`size-4 ${review.is_liked ? 'fill-current' : ''}`} />
@@ -117,7 +121,7 @@ export function ReviewItem({ review, user, onDeleteReview, onToggleLike, onAddRe
                 {review.replies && review.replies.length > 0 && (
                     <button
                         onClick={() => setIsExpanded(!isExpanded)}
-                        className="ml-1 text-sm font-medium text-blue-600 hover:text-blue-700"
+                        className="ml-1 text-sm font-medium text-blue-600 hover:text-blue-700 dark:text-black"
                     >
                         {isExpanded ? '답글 접기' : `답글 ${review.replies.length}개 보기`}
                     </button>
@@ -132,9 +136,9 @@ export function ReviewItem({ review, user, onDeleteReview, onToggleLike, onAddRe
                                 <UserNickname
                                     userId={reply.user_id}
                                     fallback="익명"
-                                    className="font-bold text-gray-700"
+                                    className="font-bold text-gray-700 dark:text-black"
                                 />
-                                <span className="text-[10px] text-gray-400">
+                                <span className="text-[10px] text-gray-400 dark:text-black">
                                     {new Date(reply.created_at).toLocaleDateString()}
                                 </span>
                                 {user?.id === reply.user_id && (
@@ -147,7 +151,7 @@ export function ReviewItem({ review, user, onDeleteReview, onToggleLike, onAddRe
                                     </button>
                                 )}
                             </div>
-                            <p className="text-gray-600">{reply.content}</p>
+                            <p className="text-gray-600 dark:text-black">{reply.content}</p>
                         </div>
                     ))}
                 </div>
@@ -166,7 +170,7 @@ export function ReviewItem({ review, user, onDeleteReview, onToggleLike, onAddRe
                                 }
                             }}
                             placeholder="답글을 남겨주세요..."
-                            className="flex-1 rounded-lg border border-gray-100 bg-gray-50 px-3 py-1.5 text-sm outline-none focus:border-blue-400 focus:bg-white"
+                            className="flex-1 rounded-lg border border-gray-100 bg-gray-50 px-3 py-1.5 text-sm outline-none focus:border-blue-400 focus:bg-white dark:text-black"
                         />
                         <button
                             onClick={handleReplySubmit}

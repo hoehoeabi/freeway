@@ -14,7 +14,7 @@ export function StarRatingInput({ label, value, onChange }: StarRatingInputProps
 
     return (
         <div className="flex flex-col gap-1">
-            <span className="text-sm font-medium text-gray-600">{label}</span>
+            <span className="text-sm font-medium text-gray-600 dark:text-black">{label}</span>
             <div className="flex gap-1" onMouseLeave={() => setHover(0)}>
                 {[1, 2, 3, 4, 5].map((star) => (
                     <button
