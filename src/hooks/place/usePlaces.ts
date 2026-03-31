@@ -33,7 +33,7 @@ export interface Place {
     [key: string]: string | number | null | undefined
 }
 
-const ITEMS_PER_PAGE = 20
+const ITEMS_PER_PAGE = 21
 
 export function usePlaces(filters: Filters, page: number = 1) {
     const [places, setPlaces] = useState<Place[]>([])
