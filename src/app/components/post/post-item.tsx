@@ -12,9 +12,8 @@ import LikePostButton from './like-post-button'
 
 export default function PostItem(post: Post & { isDetail?: boolean }) {
     const { user } = useAuth()
-    const { data: nickname } = useUserNickname(post.user_id) // ✅ 추가
-    console.log('post.user_id:', post.user_id) // ✅ 여기에 추가
-    console.log('nickname:', nickname) // ✅ 여기에 추가
+    const { data: nickname } = useUserNickname(post.user_id)
+
     const isLiked = post.post_likes.some((like) => like.user_id === user?.id)
 
     return (
